@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+     <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+    <style type="text/css">
+    	*,*::after,*::before{
+           box-sizing: border-box;
+           margin:0;
+           padding: 0;
+           font-family: 'Montserrat', sans-serif;
+    	}
+
+
+    	.container{
+    	    width: 100%;
+    	    height: 100vh;
+    	    display: flex;
+    	    justify-content: center;
+    	    align-items: center;
+    	    flex-direction: column;
+    	}
+    	.board{
+    		width: 100vw;
+    		height: 100vh;
+    		display: grid;
+    		justify-content: center;
+    		align-content: center;
+    		align-items: center;
+    		grid-template-columns: repeat(3,auto);
+
+    	}
+
+    	.cell{
+    		width: 100px;
+    		height: 100px;
+    		background-color: black;
+    		grid-auto-columns: repeat(3,auto);
+    		border: 1px solid white;
+    		display: flex;
+           justify-content: center;
+           align-items: center;
+           color: white;
+           font-size: 88px;
+           cursor: pointer;
+
+    	}
+
+    	.winning-screen
+    	{
+    		width: 100%;
+    		height: 100vh;
+    		background-color: black;
+    		position: fixed;
+    		display: none;
+    		justify-content: center;
+    		align-items: center;
+    		flex-direction: column;
+    		color:white;
+    	}
+
+    	#btn{
+    		position: relative;
+			display: inline-block;
+			padding:12px 36px;
+			margin: 10px 0;
+			color: black;
+			text-decoration: none;
+			text-transform: uppercase;
+			font-size: 18px;
+			letter-spacing: 2px;
+			border-radius: 40px;
+			background-color: white; 
+			overflow: hidden;
+			box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+			font-weight: bolder;
+
+    	}
+
+    	.active
+    	{
+    		display: flex;
+    	}
+
+
+
+    	
+    	
+    </style>
+</head>
+<body>
+	<div class="container">
+	   <div class="board" id="board">
+
+       
+	     <div class="cell"></div>
+	     <div class="cell"></div>
+	     <div class="cell"></div>
+	  
+
+
+	     
+	     <div class="cell"></div>
+	     <div class="cell"></div>
+	     <div class="cell"></div>
+	   
+
+
+	    
+	     <div class="cell"></div>
+	     <div class="cell"></div>
+	     <div class="cell"></div>
+	   
+	     
+	   </div>
+  
+
+	   <div class="winning-screen">
+      <audio class="sound" src="WIN.mp3"></audio>
+	   	<div class="winning-text-here"> </div>
+	   	<a href="#" id="btn" onclick="restartTheGame()">Restart</a>
+	   </div>
+	</div>
+
+
+	<script type="text/javascript">
+		
+		const xplayer = 'x';
+		const yplayer = 'o';
+		const winningScreen = document.querySelector('.winning-screen');
+		const cells = document.querySelectorAll('.cell');
+        let Pturn = 'x';
+
+        
+      
+	       
+	    cells.forEach(cell => {
+                cell.addEventListener('click',handleClick, { once: true }) // once is to execute only once
+	    });
+
+	    function handleClick(e)
+	    {
+
+	    	const cell = e.target;
+	    	const currentPlayer = Pturn ? xplayer : yplayer; //setting current player
+	    	Pturn = !Pturn // for swap turns
+	    	//place Mark
+	    	placeMark(cell,currentPlayer); // placing the mark
+
+	    	
+	    	checkWin(currentPlayer);
+	    }
+
+	    
+
+	    function placeMark(cell,currentPlayer)
+	    {
+	    	cell.innerHTML = currentPlayer;
+	    }
+
+	    function checkWin(currentPlayer)
+	    {
+	    	
+              if(cells[0].innerHTML == currentPlayer && cells[1].innerHTML == currentPlayer && cells[2].innerHTML == currentPlayer )
+              {
+              	showWin(currentPlayer);
+              }
+              else if(cells[3].innerHTML == currentPlayer && cells[4].innerHTML == currentPlayer && cells[5].innerHTML == currentPlayer)
+              {
+              	showWin(currentPlayer);
+              }else if(cells[6].innerHTML == currentPlayer && cells[7].innerHTML == currentPlayer && cells[8].innerHTML == currentPlayer)
+              {
+              	showWin(currentPlayer);
+              }else if(cells[0].innerHTML == currentPlayer && cells[3].innerHTML == currentPlayer && cells[6].innerHTML == currentPlayer)
+              {
+              	showWin(currentPlayer);
+              }else if(cells[1].innerHTML == currentPlayer && cells[4].innerHTML == currentPlayer && cells[7].innerHTML == currentPlayer)
+              {
+              	showWin(currentPlayer);
+              }else if(cells[2].innerHTML == currentPlayer && cells[5].innerHTML == currentPlayer && cells[8].innerHTML == currentPlayer)
+              {
+              	showWin(currentPlayer);
+              }else if(cells[0].innerHTML == currentPlayer && cells[4].innerHTML == currentPlayer && cells[8].innerHTML == currentPlayer)
+              {
+              	showWin(currentPlayer);
+              }else if(cells[2].innerHTML == currentPlayer && cells[4].innerHTML == currentPlayer && cells[6].innerHTML == currentPlayer)
+              {
+              	showWin(currentPlayer);
+              }else{
+              	showDraw()
+              }
+	    }
+
+       function showWin(currentplayer)
+       {
+       	console.log('player ' + currentplayer + ' wins');
+        let winningText = document.querySelector('.winning-text-here');
+        winningText.innerHTML = 'Player ' + currentplayer + ' wins ';
+        const winsound = document.querySelector('.sound');
+        winsound.currentTime = 0;
+        winsound.play();
+        winningScreen.classList.add('active');
+
+       }
+
+
+
+       function showDraw()
+       {
+
+       let x = 0;
+        for(let i=0;i<cells.length;i++)
+        {
+        	 
+             if(cells[i].innerHTML)
+             {
+             	x = x+1;
+
+             	if(x == 9)
+             	{
+             	console.log("it's a draw");
+			        let winningText = document.querySelector('.winning-text-here');
+			        winningText.innerHTML = "it's a draw";
+
+			        winningScreen.classList.add('active');
+             	}
+             
+             }
+        }
+
+
+       	
+       	
+       }
+
+       function restartTheGame()
+       {
+          location.reload();
+       }
+      
+
+
+		
+
+	</script>
+</body>
+</html>
